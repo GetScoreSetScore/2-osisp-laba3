@@ -1,20 +1,39 @@
 // InjectorConsole.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
+#include <stdio.h>
 #include <iostream>
-
+#include <conio.h>
+#include <windows.h>
+#include <tlhelp32.h>
+#include <iostream>
+using namespace std;
 int main()
 {
-    std::cout << "Hello World!\n";
+	DWORD pid;
+	std::cin >> pid;
+	HANDLE hRemoteProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+
+	if (hRemoteProcess != NULL)
+	{
+
+		LPVOID threadFunction = (LPVOID)GetProcAddress(GetModuleHandle(L"kernel32.dll"), "LoadLibraryA");
+
+		string argument("WrapperDll.dll");
+
+		LPVOID argumentAddress = VirtualAllocEx(hRemoteProcess, NULL, argument.length() + 1, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+
+		WriteProcessMemory(hRemoteProcess, (LPVOID)argumentAddress, argument.c_str(), argument.length() + 1, NULL);
+
+		if (CreateRemoteThread(hRemoteProcess, NULL, 0, (LPTHREAD_START_ROUTINE)threadFunction, (LPVOID)argumentAddress, 0, NULL))
+		{
+			cout << "done" << endl;
+		}
+		else
+			cout << "Cant create thread" << endl;
+
+
+	}
+	else
+		cout << "Cant find PID" << endl;
+	_getch();
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

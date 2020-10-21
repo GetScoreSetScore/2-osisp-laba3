@@ -1,19 +1,24 @@
-// StaticConsole.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
+using namespace std;
 #include <iostream>
+#include <conio.h>
 #include "DllSource.h"
 int main()
 {
-    // Initialize a Fibonacci relation sequence.
-    fibonacci_init(1, 1);
-    // Write out the sequence values until overflow.
-    do {
-        std::cout << fibonacci_index() << ": "
-            << fibonacci_current() << std::endl;
-    } while (fibonacci_next());
-    // Report count of values written before overflow.
-    std::cout << fibonacci_index() + 1 <<
-        " Fibonacci sequence values fit in an " <<
-        "unsigned 64-bit integer." << std::endl;
+    string localString = "stringbefore";
+    int IsFinished = 0;
+    while (!IsFinished)
+    {
+        cout << localString.c_str() << endl;
+        char tmp =_getch();
+        switch (tmp) {
+        case 'r':
+            Replace("stringbefore", "stringafter");
+            break;
+        case 'e':
+            IsFinished = 1;
+            break;
+        default:
+            break;
+        }
+    }
 }

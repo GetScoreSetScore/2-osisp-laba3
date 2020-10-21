@@ -6,17 +6,34 @@
 #include <conio.h>
 #include <windows.h>
 using namespace std;
-typedef int Func(int, int);
+typedef void ForeignFunction(const char *, const char*);
 int main()
 {
+    string localString = "stringbefore";
+    int IsFinished = 0;
     HMODULE dll = 0;
-    if ((dll = LoadLibrary(L"ReplaceDll.dll"))) {
-        Func* _Sum, * _Sub;
-        _Sum = (Func*)GetProcAddress(dll, "Sum");
-        _Sub = (Func*)GetProcAddress(dll, "Sub");
-        cout << "Dynamic Include: " << endl << "8 * 5 = " << _Sum(8, 5) << endl << "7 % 3 = " << _Sub(7, 3) << endl;
-        FreeLibrary(dll);
+    while (!IsFinished)
+    {
+        cout << localString.c_str() << endl;
+        char tmp = _getch();
+        switch (tmp) {
+        case 'r':
+           
+            if ((dll = LoadLibrary(L"MainDll.dll"))) {
+                ForeignFunction* FuncBuf;
+                FuncBuf = (ForeignFunction*)GetProcAddress(dll, "Replace");
+                FuncBuf("stringbefore", "stringafter");
+                FreeLibrary(dll);
+            }
+            else
+                cout<<"Can't load library";
+            break;
+        case 'e':
+            IsFinished = 1;
+            break;
+        default:
+            break;
+        }
     }
-    else
-        printf("Cant load Dll");
+
 }
