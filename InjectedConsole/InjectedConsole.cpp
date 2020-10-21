@@ -6,7 +6,6 @@
 #include <conio.h>
 #include <windows.h>
 using namespace std;
-typedef void ForeignFunction(const char*, const char*);
 int main()
 {
     string localString = "stringbefore";
